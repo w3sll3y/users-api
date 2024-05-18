@@ -45,4 +45,5 @@ model User {
   peso           Float
   tipo_sanguineo String
   cor            String
+  createdBy      Int
 }
