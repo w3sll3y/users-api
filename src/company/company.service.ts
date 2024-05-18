@@ -21,7 +21,9 @@ export class CompanyService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findByEmail(email: string) {
+    return this.prisma.company.findUnique({
+      where: { email },
+    });
   }
 }
