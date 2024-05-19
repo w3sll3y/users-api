@@ -5,12 +5,14 @@ import { Company } from 'src/company/entities/company.entity';
 import { CompanyPayload } from './models/CompanyPayload';
 import { JwtService } from '@nestjs/jwt';
 import { UserToken } from './models/UserToken';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly companyService: CompanyService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService
   ) { }
 
   async validateCompany(email: string, password: string) {
@@ -42,5 +44,18 @@ export class AuthService {
       access_token: jwtToken,
     }
 
+  }
+
+  async uploadFile(file, userId: number) {
+    const jsonData = JSON.parse(file.buffer.toString('utf8'));
+
+    for (const clientData of jsonData) {
+      await this.prisma.user.create({
+        data: {
+          ...clientData,
+          createdBy: userId
+        }
+      });
+    }
   }
 }

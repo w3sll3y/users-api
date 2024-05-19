@@ -1,26 +1,86 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePatchUserDTO } from './dto/update-patch.dto';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private prisma: PrismaService) { }
+
+  async create(createUserDto: CreateUserDto, id: number) {
+    const data = {
+      ...createUserDto,
+      createdBy: id
+    }
+    await this.prisma.user.create({ data })
   }
 
-  findAll() {
-    return `This action returns all user`;
+  findAll(createdBy: number) {
+    return this.prisma.user.findMany({
+      where: {
+        createdBy,
+      }
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: any, userId: number) {
+    const data = await this.prisma.user.findUnique({
+      where: {
+        id,
+        createdBy: userId
+      }
+    });
+
+    if (data === null) {
+      throw new NotFoundException('User Not Found')
+    }
+    return data
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdatePatchUserDTO, userId: number) {
+    const userExists = await this.prisma.user.findUnique({
+      where: {
+        id,
+      }
+    })
+
+    if (!userExists) {
+      throw new NotFoundException('User Not Found')
+    }
+
+    if (userExists.createdBy !== userId) {
+      throw new NotFoundException('User Not Found')
+    }
+
+    return await this.prisma.user.update({
+      data: {
+        ...updateUserDto
+      },
+      where: {
+        id
+      }
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number, userId: number) {
+    const userExists = await this.prisma.user.findUnique({
+      where: {
+        id,
+      }
+    })
+
+    if (!userExists) {
+      throw new NotFoundException('User Not Found')
+    }
+
+    if (userExists.createdBy !== userId) {
+      throw new NotFoundException('User Not Found')
+    }
+
+    return await this.prisma.user.delete({
+      where: {
+        id
+      }
+    })
   }
 }

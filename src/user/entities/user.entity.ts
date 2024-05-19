@@ -1,5 +1,5 @@
 export class User {
-  id: number;
+  id?: number;
   nome: string;
   idade: number;
   cpf: string;
@@ -13,7 +13,7 @@ export class User {
   senha: string;
   cep: string;
   endereco: string;
-  numero: string;
+  numero: number;
   bairro: string;
   cidade: string;
   estado: string;
@@ -23,4 +23,5 @@ export class User {
   peso: number;
   tipo_sanguineo: string;
   cor: string;
+  createdBy?: number;
 }

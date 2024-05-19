@@ -6,9 +6,10 @@ import { CompanyModule } from 'src/company/company.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LoginValidationMiddleware } from './middlewares/login-validation.middleware';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  imports: [CompanyModule, JwtModule.register({
+  imports: [CompanyModule, PrismaModule, JwtModule.register({
     secret: process.env.JWT_SECRET,
     signOptions: {
       expiresIn: '30d'
