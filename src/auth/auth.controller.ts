@@ -6,6 +6,7 @@ import { IsPublic } from './decorators/is-public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Company } from 'src/company/entities/company.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller()
 export class AuthController {

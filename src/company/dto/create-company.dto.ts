@@ -2,12 +2,22 @@ import { IsEmail, IsString, Matches, MaxLength, MinLength } from "class-validato
 import { Company } from "../entities/company.entity";
 
 export class CreateCompanyDto extends Company {
+  /** 
+  * @example 'frnksntra@mail.com'
+  */
   @IsEmail()
   email: string;
 
+  /**
+   * @example 'Frank Sinatra'
+   */
   @IsString()
   name: string;
 
+  /**
+   * The password must be between 4 and 20 characters, with at least one uppercase letter, one lowercase letter and one special character
+   * @example 'Abc@123'
+   */
   @IsString()
   @MinLength(4)
   @MaxLength(20)
